@@ -153,12 +153,25 @@ export default function ProjectDetail() {
             {/* LEFT: THE STORY & VIDEO */}
             <div className="lg:col-span-2 space-y-20">
               <article>
-                <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-tighter">
-                  <Lightbulb size={20} className="text-indigo-500" /> Story &
-                  Solutions
-                </h2>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                    <Lightbulb size={24} />
+                  </div>
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+                    Story & Solutions
+                  </h2>
+                </div>
+
+                {/* PHẦN QUAN TRỌNG NHẤT: Thêm class 'prose' và tùy chỉnh styles */}
                 <div
-                  className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-sm md:text-base"
+                  className="prose prose-slate max-w-none 
+        prose-h2:text-xl prose-h2:font-bold prose-h2:text-slate-900 prose-h2:uppercase prose-h2:tracking-tight prose-h2:mb-4 prose-h2:mt-10
+        prose-h3:text-lg prose-h3:font-bold prose-h3:text-slate-800 prose-h3:mt-8
+        prose-p:text-slate-600 prose-p:leading-relaxed prose-p:text-[15px]
+        prose-ul:list-none prose-ul:pl-0
+        prose-li:relative prose-li:pl-7 prose-li:text-slate-600 prose-li:mb-2
+        before:prose-li:content-['🚀'] before:prose-li:absolute before:prose-li:left-0
+        "
                   dangerouslySetInnerHTML={{ __html: project.content }}
                 />
               </article>
