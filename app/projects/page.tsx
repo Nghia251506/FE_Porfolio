@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Github, Globe, Search, Zap, Code2, Rocket, Layers } from "lucide-react";
 import Link from "next/link";
+import {ProjectResponse} from "@/type/project"
 
 export default function ProjectsPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +19,7 @@ export default function ProjectsPage() {
   const { items: projects, isLoading: projectsLoading } = useSelector((state: RootState) => state.project);
   const { currentSeo: seoData, isLoading: seoLoading } = useSelector((state: RootState) => state.seo);
 
-  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState<ProjectResponse[]>([]);
   const [activeTab, setActiveTab] = useState("All");
   const [mounted, setMounted] = useState(false);
 

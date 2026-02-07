@@ -14,13 +14,14 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {CertificateResponse} from "@/type/certificate"
 
 export default function CertificatesPage() {
   const dispatch = useAppDispatch();
   const { items: certificates, isLoading: certLoading } = useAppSelector((state) => state.certificate);
   const { currentSeo: seoData, isLoading: seoLoading } = useAppSelector((state) => state.seo);
 
-  const [filteredCerts, setFilteredCerts] = useState([]);
+  const [filteredCerts, setFilteredCerts] = useState<CertificateResponse[]>([]);
   const [activeTab, setActiveTab] = useState("All");
   
   // Xử lý Hydration cho Next.js
