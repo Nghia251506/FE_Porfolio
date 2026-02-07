@@ -1,608 +1,307 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { fetchSeoByUrl } from "@/store/slice/seoSlice";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import * as LucideIcons from "lucide-react";
 import {
   ArrowRight,
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
-  Code,
-  Palette,
-  Zap,
-  Database,
-  Globe,
   Terminal,
-  Briefcase,
-  GraduationCap,
   Award,
-  ChevronDown,
-} from 'lucide-react';
+  Zap,
+  Cpu,
+  History,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 export default function Portfolio() {
-  const [scrolled, setScrolled] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentSeo } = useSelector((state: RootState) => state.seo);
+  const [certCount, setCertCount] = useState(0);
+  const [techStacks, setTechStacks] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Danh sách ảnh Banner - Ông thay link ảnh thật vào đây nhé
+  const slides = [
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop",
+  ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+    const fetchData = async () => {
+      try {
+        const [certRes, techRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/certificates`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/tech-stacks`),
+        ]);
+        const certData = await certRes.json();
+        const techData = await techRes.json();
+        setCertCount(certData.length || 0);
+        setTechStacks(techData || []);
+      } catch (error) {
+        console.error("Lỗi:", error);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    fetchData();
+    dispatch(fetchSeoByUrl("/"));
+  }, [dispatch]);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 5000); // 5000ms = 5s
+
+    // Clear interval khi component unmount để tránh rò rỉ bộ nhớ
+    return () => clearInterval(slideInterval);
+  }, [currentSlide]);
+
+  const displayStacks = useMemo(
+    () => [...techStacks, ...techStacks],
+    [techStacks],
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/80 backdrop-blur-md shadow-md'
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-              Portfolio
+    <div className="min-h-screen bg-[#fafafa] text-slate-900 selection:bg-indigo-100 selection:text-indigo-700 font-sans pb-20">
+      {/* HERO SECTION - RESTRUCTURED: TEXT LEFT | SLIDER RIGHT */}
+      <section className="relative pt-32 pb-16 px-6 md:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* LEFT: Text Content (Co nhỏ lại để cân bằng) */}
+          <div className="lg:col-span-5 text-left">
+            <Badge className="mb-6 bg-indigo-50 text-indigo-600 border-none px-4 py-1.5 rounded-full font-bold uppercase tracking-widest text-[10px]">
+              SẴN SÀNG CHO CÁC DỰ ÁN MỚI
+            </Badge>
+            <h1 className="text-5xl md:text-7xl font-[1000] mb-6 tracking-tighter leading-[0.9] uppercase italic">
+              {currentSeo?.h1Override?.split(" ")[0] || "Lập trình"} <br />
+              <span className="text-indigo-600 not-italic">
+                {currentSeo?.h1Override?.split(" ").slice(1).join(" ") ||
+                  "Fullstack"}
+              </span>
             </h1>
-            <div className="hidden md:flex gap-8">
-              <button
-                onClick={() => scrollToSection('about')}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
-              >
-                About
-              </button>
-              <button
-                onClick={() => scrollToSection('skills')}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
-              >
-                Skills
-              </button>
-              <button
-                onClick={() => scrollToSection('projects')}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
-              >
-                Projects
-              </button>
-              <button
-                onClick={() => scrollToSection('experience')}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
-              >
-                Experience
-              </button>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="text-slate-600 hover:text-slate-900 transition-colors font-medium"
-              >
-                Contact
-              </button>
-            </div>
+            <p className="text-lg text-slate-500 max-w-md mb-10 font-medium leading-relaxed italic border-l-2 border-indigo-600 pl-4">
+              "
+              {currentSeo?.description ||
+                "Xây dựng trải nghiệm số kết hợp giữa kỹ thuật chuẩn xác và thẩm mỹ đỉnh cao."}
+              "
+            </p>
+            <Button
+              size="lg"
+              className="h-14 px-8 rounded-2xl bg-indigo-600 font-black shadow-xl hover:bg-indigo-700 transition-all group text-white"
+            >
+              XEM CÁC DỰ ÁN
+              <ArrowRight
+                className="ml-2 group-hover:translate-x-1 transition-transform"
+                size={18}
+              />
+            </Button>
           </div>
-        </div>
-      </nav>
 
-      <section className="min-h-screen flex items-center justify-center px-6 pt-20">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="animate-fade-in">
-            <h2 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-transparent leading-tight">
-              Your Name Here
-            </h2>
-            <p className="text-2xl md:text-3xl text-slate-600 mb-8">
-              Full Stack Developer & Designer
-            </p>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-              Crafting beautiful, performant, and scalable web applications with
-              modern technologies. Passionate about creating exceptional user
-              experiences.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Button
-                size="lg"
-                onClick={() => scrollToSection('projects')}
-                className="group"
-              >
-                View My Work
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => scrollToSection('contact')}
-              >
-                Get In Touch
-              </Button>
+          {/* RIGHT: Image Slider (Banner style) */}
+          <div className="lg:col-span-7 relative group">
+            <div className="relative h-[400px] md:h-[550px] w-full overflow-hidden rounded-[3rem] shadow-2xl bg-slate-200">
+              {slides.map((s, i) => (
+                <div
+                  key={i}
+                  className={`absolute inset-0 transition-all duration-[1500ms] ease-in-out transform ${
+                    i === currentSlide
+                      ? "opacity-100 scale-100 z-10"
+                      : "opacity-0 scale-105 z-0"
+                  }`}
+                >
+                  <img
+                    src={s}
+                    alt="Banner Portfolio"
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Overlay làm ảnh trông deep hơn */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+                </div>
+              ))}
+
+              {/* Slider Indicators (Các dấu gạch nhỏ bên dưới cho biết đang ở slide nào) */}
+              <div className="absolute bottom-8 left-8 flex gap-2 z-20">
+                {slides.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1 rounded-full transition-all duration-500 ${
+                      i === currentSlide
+                        ? "w-8 bg-indigo-500"
+                        : "w-2 bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Controls - Giữ nguyên nhưng thêm hover effect xịn hơn */}
+              <div className="absolute bottom-8 right-8 flex gap-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-indigo-600 transition-all shadow-2xl"
+                  onClick={() =>
+                    setCurrentSlide((prev) =>
+                      prev === 0 ? slides.length - 1 : prev - 1,
+                    )
+                  }
+                >
+                  <ChevronLeft size={20} />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-indigo-600 transition-all shadow-2xl"
+                  onClick={() =>
+                    setCurrentSlide((prev) =>
+                      prev === slides.length - 1 ? 0 : prev + 1,
+                    )
+                  }
+                >
+                  <ChevronRight size={20} />
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-6 justify-center">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-slate-900 transition-colors hover:scale-110 transform duration-200"
-              >
-                <Github className="h-6 w-6" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-slate-900 transition-colors hover:scale-110 transform duration-200"
-              >
-                <Linkedin className="h-6 w-6" />
-              </a>
-              <a
-                href="mailto:your.email@example.com"
-                className="text-slate-600 hover:text-slate-900 transition-colors hover:scale-110 transform duration-200"
-              >
-                <Mail className="h-6 w-6" />
-              </a>
-            </div>
+
+            {/* Decor: Thêm cái bóng mờ Indigo phía sau cho ảo diệu */}
+            <div className="absolute -z-10 -bottom-10 -left-10 w-64 h-64 bg-indigo-200/30 blur-[100px] rounded-full"></div>
           </div>
-          <button
-            onClick={() => scrollToSection('about')}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce"
-          >
-            <ChevronDown className="h-8 w-8 text-slate-400" />
-          </button>
         </div>
       </section>
 
-      <section id="about" className="py-32 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h3 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            About Me
-          </h3>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      {/* BENTO GRID: Kỹ năng & Lộ trình */}
+      <section id="about" className="py-10 px-6 md:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          {/* CARD: Kiến trúc sư (Giữ nguyên text nhưng chỉnh padding) */}
+          <Card className="md:col-span-2 lg:col-span-3 p-10 bg-white rounded-[3rem] shadow-sm border-none flex flex-col justify-between hover:shadow-xl transition-all group">
             <div className="space-y-6">
-              <p className="text-lg text-slate-600 leading-relaxed">
-                Hello! I'm a passionate developer with over X years of
-                experience in building web applications. I specialize in
-                creating clean, efficient, and user-friendly solutions.
-              </p>
-              <p className="text-lg text-slate-600 leading-relaxed">
-                My journey in tech started with a curiosity for how things work,
-                and has evolved into a career focused on solving complex
-                problems through elegant code and thoughtful design.
-              </p>
-              <p className="text-lg text-slate-600 leading-relaxed">
-                When I'm not coding, you can find me exploring new technologies,
-                contributing to open-source projects, or sharing knowledge with
-                the developer community.
+              <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 transition-transform group-hover:scale-110">
+                <Terminal size={28} />
+              </div>
+              <h3 className="text-4xl md:text-5xl font-[1000] tracking-tighter uppercase italic leading-none">
+                Kiến trúc sư <br /> Công nghệ
+              </h3>
+              <p className="text-slate-500 font-bold text-base md:text-lg leading-relaxed">
+                Tôi xây dựng giải pháp dựa trên cấu trúc hệ thống sạch và khả
+                năng SEO vượt trội.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-6">
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <Award className="h-8 w-8 text-slate-700 mb-4" />
-                <h4 className="font-bold text-2xl mb-2">10+</h4>
-                <p className="text-slate-600">Projects Completed</p>
-              </Card>
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <Briefcase className="h-8 w-8 text-slate-700 mb-4" />
-                <h4 className="font-bold text-2xl mb-2">5+</h4>
-                <p className="text-slate-600">Years Experience</p>
-              </Card>
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <Globe className="h-8 w-8 text-slate-700 mb-4" />
-                <h4 className="font-bold text-2xl mb-2">20+</h4>
-                <p className="text-slate-600">Happy Clients</p>
-              </Card>
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <GraduationCap className="h-8 w-8 text-slate-700 mb-4" />
-                <h4 className="font-bold text-2xl mb-2">15+</h4>
-                <p className="text-slate-600">Certifications</p>
-              </Card>
+          </Card>
+
+          {/* CARD: LỘ TRÌNH PHÁT TRIỂN (TIMELINE) - NEW MÀ ÔNG MUỐN */}
+          <Card className="md:col-span-2 lg:col-span-3 p-10 bg-white rounded-[3rem] shadow-sm border-none hover:shadow-xl transition-all overflow-hidden relative">
+            <div className="flex items-center gap-3 mb-8">
+              <History className="text-indigo-600" size={24} />
+              <h4 className="font-black uppercase tracking-[0.2em] text-[10px]">
+                Lộ trình phát triển
+              </h4>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="skills" className="py-32 px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            Skills & Expertise
-          </h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-              <div className="rounded-full bg-slate-100 w-16 h-16 flex items-center justify-center mb-6">
-                <Code className="h-8 w-8 text-slate-700" />
-              </div>
-              <h4 className="text-xl font-bold mb-4">Frontend Development</h4>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                Building responsive and interactive user interfaces with modern
-                frameworks and best practices.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">React</Badge>
-                <Badge variant="secondary">Next.js</Badge>
-                <Badge variant="secondary">TypeScript</Badge>
-                <Badge variant="secondary">Tailwind CSS</Badge>
-                <Badge variant="secondary">Vue.js</Badge>
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-              <div className="rounded-full bg-slate-100 w-16 h-16 flex items-center justify-center mb-6">
-                <Database className="h-8 w-8 text-slate-700" />
-              </div>
-              <h4 className="text-xl font-bold mb-4">Backend Development</h4>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                Creating robust APIs and server-side applications with focus on
-                scalability and performance.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Node.js</Badge>
-                <Badge variant="secondary">PostgreSQL</Badge>
-                <Badge variant="secondary">MongoDB</Badge>
-                <Badge variant="secondary">Express</Badge>
-                <Badge variant="secondary">GraphQL</Badge>
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-              <div className="rounded-full bg-slate-100 w-16 h-16 flex items-center justify-center mb-6">
-                <Palette className="h-8 w-8 text-slate-700" />
-              </div>
-              <h4 className="text-xl font-bold mb-4">UI/UX Design</h4>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                Designing intuitive and beautiful interfaces that users love to
-                interact with.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Figma</Badge>
-                <Badge variant="secondary">Adobe XD</Badge>
-                <Badge variant="secondary">Prototyping</Badge>
-                <Badge variant="secondary">Design Systems</Badge>
-                <Badge variant="secondary">Wireframing</Badge>
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-              <div className="rounded-full bg-slate-100 w-16 h-16 flex items-center justify-center mb-6">
-                <Terminal className="h-8 w-8 text-slate-700" />
-              </div>
-              <h4 className="text-xl font-bold mb-4">DevOps & Tools</h4>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                Automating workflows and managing infrastructure for efficient
-                development and deployment.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Docker</Badge>
-                <Badge variant="secondary">Git</Badge>
-                <Badge variant="secondary">CI/CD</Badge>
-                <Badge variant="secondary">AWS</Badge>
-                <Badge variant="secondary">Vercel</Badge>
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-              <div className="rounded-full bg-slate-100 w-16 h-16 flex items-center justify-center mb-6">
-                <Zap className="h-8 w-8 text-slate-700" />
-              </div>
-              <h4 className="text-xl font-bold mb-4">Performance</h4>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                Optimizing applications for speed, accessibility, and search
-                engine visibility.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Optimization</Badge>
-                <Badge variant="secondary">SEO</Badge>
-                <Badge variant="secondary">Analytics</Badge>
-                <Badge variant="secondary">Accessibility</Badge>
-                <Badge variant="secondary">Lighthouse</Badge>
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-              <div className="rounded-full bg-slate-100 w-16 h-16 flex items-center justify-center mb-6">
-                <Globe className="h-8 w-8 text-slate-700" />
-              </div>
-              <h4 className="text-xl font-bold mb-4">Web Technologies</h4>
-              <p className="text-slate-600 mb-6 leading-relaxed">
-                Leveraging modern web standards and technologies to build
-                cutting-edge applications.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">HTML5</Badge>
-                <Badge variant="secondary">CSS3</Badge>
-                <Badge variant="secondary">JavaScript</Badge>
-                <Badge variant="secondary">REST APIs</Badge>
-                <Badge variant="secondary">WebSockets</Badge>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" className="py-32 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h3 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            Featured Projects
-          </h3>
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300">
-              <div className="h-64 bg-gradient-to-br from-slate-200 to-slate-300 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Code className="h-24 w-24 text-slate-400" />
-                </div>
-              </div>
-              <CardContent className="p-8">
-                <h4 className="text-2xl font-bold mb-3">Project Name 1</h4>
-                <p className="text-slate-600 mb-4 leading-relaxed">
-                  A comprehensive web application built with React and Node.js.
-                  Features include real-time updates, authentication, and
-                  responsive design.
+            <div className="space-y-10 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+              {/* Item 1 */}
+              <div className="relative pl-10">
+                <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-indigo-600 z-10 shadow-sm"></div>
+                <span className="text-[10px] font-black text-indigo-600 uppercase mb-1 block tracking-widest">
+                  2024 - 2026
+                </span>
+                <h5 className="font-extrabold text-lg uppercase italic leading-none mb-2">
+                  Freelancer Developer
+                </h5>
+                <p className="text-xs md:text-sm text-slate-400 font-bold leading-relaxed">
+                  Rời khỏi vị trí quản lý để chinh phục thế giới Freelance, gặt
+                  hái thành công qua các dự án thực chiến đa dạng.
                 </p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <Badge>React</Badge>
-                  <Badge>Node.js</Badge>
-                  <Badge>MongoDB</Badge>
-                  <Badge>Tailwind</Badge>
-                </div>
-                <div className="flex gap-4">
-                  <Button variant="outline" size="sm" className="group/btn">
-                    <ExternalLink className="h-4 w-4 mr-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                    Live Demo
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Github className="h-4 w-4 mr-2" />
-                    Source Code
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300">
-              <div className="h-64 bg-gradient-to-br from-slate-200 to-slate-300 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Palette className="h-24 w-24 text-slate-400" />
-                </div>
               </div>
-              <CardContent className="p-8">
-                <h4 className="text-2xl font-bold mb-3">Project Name 2</h4>
-                <p className="text-slate-600 mb-4 leading-relaxed">
-                  An elegant e-commerce platform with advanced filtering, cart
-                  management, and payment integration. Built for scalability.
+              {/* Item 2 */}
+              <div className="relative pl-10 opacity-60">
+                <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-slate-300 z-10"></div>
+                <span className="text-[10px] font-black text-slate-400 uppercase mb-1 block tracking-widest">
+                  2022 - 2023
+                </span>
+                <h5 className="font-extrabold text-lg uppercase italic leading-none mb-2">
+                  Trưởng phòng kỹ thuật
+                </h5>
+                <p className="text-xs md:text-sm text-slate-400 font-bold leading-relaxed tracking-tight">
+                  CÔNG TY TNHH TM&DV MÁY TÍNH LAPTOP HÀ NỘI. Quản lý hệ thống và
+                  đội ngũ kỹ thuật chuyên nghiệp.
                 </p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <Badge>Next.js</Badge>
-                  <Badge>TypeScript</Badge>
-                  <Badge>Stripe</Badge>
-                  <Badge>PostgreSQL</Badge>
-                </div>
-                <div className="flex gap-4">
-                  <Button variant="outline" size="sm" className="group/btn">
-                    <ExternalLink className="h-4 w-4 mr-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                    Live Demo
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Github className="h-4 w-4 mr-2" />
-                    Source Code
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300">
-              <div className="h-64 bg-gradient-to-br from-slate-200 to-slate-300 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Database className="h-24 w-24 text-slate-400" />
-                </div>
               </div>
-              <CardContent className="p-8">
-                <h4 className="text-2xl font-bold mb-3">Project Name 3</h4>
-                <p className="text-slate-600 mb-4 leading-relaxed">
-                  A data visualization dashboard providing insights through
-                  interactive charts and real-time analytics.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <Badge>Vue.js</Badge>
-                  <Badge>D3.js</Badge>
-                  <Badge>Express</Badge>
-                  <Badge>Redis</Badge>
-                </div>
-                <div className="flex gap-4">
-                  <Button variant="outline" size="sm" className="group/btn">
-                    <ExternalLink className="h-4 w-4 mr-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                    Live Demo
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Github className="h-4 w-4 mr-2" />
-                    Source Code
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
+          </Card>
 
-            <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300">
-              <div className="h-64 bg-gradient-to-br from-slate-200 to-slate-300 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Globe className="h-24 w-24 text-slate-400" />
-                </div>
+          {/* CARD: Certificates (Co lại) */}
+          <Card className="md:col-span-1 lg:col-span-2 p-10 bg-indigo-600 text-white rounded-[3rem] shadow-lg flex flex-col items-center justify-center text-center group cursor-pointer relative overflow-hidden">
+            <div className="relative z-10">
+              <Award className="mb-4 opacity-50 mx-auto" size={40} />
+              <h4 className="text-6xl font-[1000] mb-2 italic tracking-tighter">
+                {certCount}+
+              </h4>
+              <p className="font-black uppercase tracking-[0.2em] text-[10px] opacity-80">
+                Chứng chỉ Quốc tế
+              </p>
+            </div>
+            <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+          </Card>
+
+          {/* CARD: Performance */}
+          <Card className="md:col-span-3 lg:col-span-4 p-10 bg-slate-900 text-white rounded-[3rem] shadow-lg flex flex-col justify-between overflow-hidden relative group">
+            <div className="relative z-10">
+              <h4 className="text-4xl md:text-5xl font-[1000] italic uppercase tracking-tighter leading-none mb-4">
+                Hiệu năng <br /> dẫn đầu.
+              </h4>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-yellow-400 backdrop-blur-sm">
+                <Zap size={18} fill="currentColor" />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  Điểm Mobile 99+
+                </span>
               </div>
-              <CardContent className="p-8">
-                <h4 className="text-2xl font-bold mb-3">Project Name 4</h4>
-                <p className="text-slate-600 mb-4 leading-relaxed">
-                  A social media platform with real-time messaging, post
-                  sharing, and advanced user interaction features.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <Badge>React</Badge>
-                  <Badge>Socket.io</Badge>
-                  <Badge>AWS</Badge>
-                  <Badge>GraphQL</Badge>
-                </div>
-                <div className="flex gap-4">
-                  <Button variant="outline" size="sm" className="group/btn">
-                    <ExternalLink className="h-4 w-4 mr-2 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                    Live Demo
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Github className="h-4 w-4 mr-2" />
-                    Source Code
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            </div>
+            <Cpu
+              className="absolute -right-8 -bottom-8 text-white/5 transition-transform group-hover:scale-110 duration-700"
+              size={220}
+            />
+          </Card>
         </div>
       </section>
 
-      <section id="experience" className="py-32 px-6 bg-slate-50">
-        <div className="max-w-4xl mx-auto">
-          <h3 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            Experience
+      {/* TECH STACK (Giữ nguyên logic slider của ông nhưng bọc lại cho gọn) */}
+      <section id="skills" className="py-24 bg-white overflow-hidden mt-10">
+        <div className="max-w-7xl mx-auto px-8 mb-16">
+          <h3 className="text-5xl md:text-7xl font-[1000] tracking-tighter italic uppercase leading-none">
+            Kho vũ khí <br />{" "}
+            <span className="text-indigo-600 not-italic">Kỹ thuật</span>
           </h3>
-          <div className="space-y-12">
-            <div className="relative pl-8 border-l-2 border-slate-300 hover:border-slate-400 transition-colors">
-              <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-slate-600"></div>
-              <div className="mb-2 text-sm text-slate-500">2022 - Present</div>
-              <h4 className="text-2xl font-bold mb-2">Senior Full Stack Developer</h4>
-              <p className="text-slate-600 mb-3 font-medium">Company Name</p>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Leading development of enterprise-level web applications,
-                mentoring junior developers, and implementing best practices
-                across the engineering team.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">Leadership</Badge>
-                <Badge variant="outline">Architecture</Badge>
-                <Badge variant="outline">Mentoring</Badge>
+        </div>
+        <div className="relative flex overflow-hidden group">
+          <div className="flex animate-infinite-scroll gap-8 py-10">
+            {displayStacks.map((tech: any, i: number) => (
+              <div
+                key={i}
+                className="w-[280px] flex-shrink-0 p-8 bg-white border border-slate-50 rounded-[2.5rem] transition-all text-center flex flex-col items-center gap-5 shadow-sm hover:shadow-xl"
+              >
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 overflow-hidden">
+                  <img
+                    src={tech.iconUrl}
+                    className="w-8 h-8 object-contain"
+                    alt={tech.name}
+                  />
+                </div>
+                <div>
+                  <span className="font-black text-xs uppercase tracking-widest block mb-1">
+                    {tech.name}
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase">
+                    {tech.proficiency || "Chuyên gia"}
+                  </span>
+                </div>
               </div>
-            </div>
-
-            <div className="relative pl-8 border-l-2 border-slate-300 hover:border-slate-400 transition-colors">
-              <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-slate-600"></div>
-              <div className="mb-2 text-sm text-slate-500">2020 - 2022</div>
-              <h4 className="text-2xl font-bold mb-2">Full Stack Developer</h4>
-              <p className="text-slate-600 mb-3 font-medium">Previous Company</p>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Developed and maintained multiple client projects, focusing on
-                modern web technologies and creating seamless user experiences.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">React</Badge>
-                <Badge variant="outline">Node.js</Badge>
-                <Badge variant="outline">AWS</Badge>
-              </div>
-            </div>
-
-            <div className="relative pl-8 border-l-2 border-slate-300 hover:border-slate-400 transition-colors">
-              <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-slate-600"></div>
-              <div className="mb-2 text-sm text-slate-500">2018 - 2020</div>
-              <h4 className="text-2xl font-bold mb-2">Frontend Developer</h4>
-              <p className="text-slate-600 mb-3 font-medium">Startup Company</p>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Built responsive web applications and collaborated with design
-                teams to deliver pixel-perfect implementations.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">JavaScript</Badge>
-                <Badge variant="outline">CSS</Badge>
-                <Badge variant="outline">UI/UX</Badge>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
-
-      <section id="contact" className="py-32 px-6 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-4xl md:text-5xl font-bold mb-6">
-            Let's Work Together
-          </h3>
-          <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-2xl mx-auto">
-            I'm always open to discussing new projects, creative ideas, or
-            opportunities to be part of your vision.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <Card className="p-8 hover:shadow-lg transition-shadow">
-              <Mail className="h-8 w-8 text-slate-700 mx-auto mb-4" />
-              <h4 className="font-bold mb-2">Email</h4>
-              <a
-                href="mailto:your.email@example.com"
-                className="text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                your.email@example.com
-              </a>
-            </Card>
-            <Card className="p-8 hover:shadow-lg transition-shadow">
-              <Linkedin className="h-8 w-8 text-slate-700 mx-auto mb-4" />
-              <h4 className="font-bold mb-2">LinkedIn</h4>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                /in/yourprofile
-              </a>
-            </Card>
-            <Card className="p-8 hover:shadow-lg transition-shadow">
-              <Github className="h-8 w-8 text-slate-700 mx-auto mb-4" />
-              <h4 className="font-bold mb-2">GitHub</h4>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                @yourusername
-              </a>
-            </Card>
-          </div>
-          <Button size="lg" className="group">
-            <Mail className="h-5 w-5 mr-2" />
-            Send Me an Email
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-          </Button>
-        </div>
-      </section>
-
-      <footer className="bg-slate-900 text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-              <h4 className="text-2xl font-bold mb-2">Portfolio</h4>
-              <p className="text-slate-400">
-                Building the future, one line of code at a time.
-              </p>
-            </div>
-            <div className="flex gap-6">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
-              >
-                <Github className="h-6 w-6" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
-              >
-                <Linkedin className="h-6 w-6" />
-              </a>
-              <a
-                href="mailto:your.email@example.com"
-                className="text-slate-400 hover:text-white transition-colors hover:scale-110 transform duration-200"
-              >
-                <Mail className="h-6 w-6" />
-              </a>
-            </div>
-          </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-            <p>© 2024 Your Name. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
