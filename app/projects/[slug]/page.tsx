@@ -114,19 +114,25 @@ export default function ProjectDetail() {
           </div>
 
           {/* TIÊU ĐỀ CHÍNH */}
-          <header className="mb-16 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-[0.2em]">
-              <ShieldCheck size={12} className="fill-current" /> Sẵn sàng vận
-              hành
+          <header className="mb-16 space-y-10">
+            {/* Badge trạng thái - Nhỏ gọn, tinh tế */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] border border-slate-100">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Hệ thống vận hành ổn định
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-[1000] text-slate-900 tracking-tighter leading-[0.9] uppercase italic">
+            {/* Tiêu đề: Hạ size xuống 3xl/5xl, tăng leading lên 1.4 */}
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-[1000] text-slate-900 tracking-[0.03em] leading-[1.4] md:leading-[1.3] uppercase italic">
               {project.title}
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-3xl italic border-l-4 border-indigo-600 pl-6">
-              "{project.shortDescription}"
-            </p>
+            {/* Phần mô tả: Nới lỏng khoảng cách chữ */}
+            <div className="relative pt-8 mt-8 border-t border-slate-100">
+              <div className="absolute -top-[2px] left-0 w-16 h-1 bg-indigo-600 rounded-full" />
+              <p className="text-base md:text-xl text-slate-500 font-semibold leading-[1.7] max-w-4xl italic tracking-normal">
+                {project.shortDescription}
+              </p>
+            </div>
           </header>
 
           {/* HÌNH ẢNH DỰ ÁN */}
