@@ -15,6 +15,8 @@ import {
   Layout,
   Server,
   Database,
+  History,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -42,7 +44,6 @@ export default function ProjectDetail() {
     fetchDetail();
   }, [slug]);
 
-  // Hàm lọc tech stack theo category
   const getTechByCategory = (category: string) => {
     return (
       project?.techStacks?.filter((t: any) => t.category === category) || []
@@ -86,109 +87,105 @@ export default function ProjectDetail() {
           variant="ghost"
           className="mb-4 gap-2"
         >
-          <ArrowLeft size={16} /> Quay lại
+          <ArrowLeft size={16} /> Quay lại danh sách
         </Button>
-        <h1 className="text-slate-400 font-medium">
-          Không tìm thấy nội dung dự án.
+        <h1 className="text-slate-400 font-bold uppercase tracking-tighter">
+          Không tìm thấy dự án này
         </h1>
       </div>
     );
 
   return (
     <div className="min-h-screen bg-white selection:bg-indigo-100">
-      <main className="pt-20 pb-40">
-        <div className="max-w-5xl mx-auto px-6">
-          {/* BACK BUTTON - SÁT TRÁI */}
-          {/* <div className="relative z-50 flex justify-start mb-8">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-indigo-600 transition-all group py-2" // Thêm py-2 để tăng diện tích click
+      <main className="pt-24 pb-40">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* NÚT QUAY LẠI */}
+          <div className="mb-12">
+            <button
+              onClick={() => router.push("/projects")}
+              className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-indigo-600 transition-all"
             >
               <ArrowLeft
                 size={14}
-                className="transform group-hover:-translate-x-1 transition-transform duration-300"
+                className="group-hover:-translate-x-1 transition-transform"
               />
-              <span>Back to Projects</span>
-            </Link>
-          </div> */}
+              Quay lại dự án
+            </button>
+          </div>
 
-          {/* HEADER: CENTERED */}
-          <header className="text-center mb-16 space-y-6 relative">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">
-              <ShieldCheck size={12} className="text-indigo-500" /> PROD READY
+          {/* TIÊU ĐỀ CHÍNH */}
+          <header className="mb-16 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-[0.2em]">
+              <ShieldCheck size={12} className="fill-current" /> Sẵn sàng vận
+              hành
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-[1000] text-slate-900 tracking-tighter leading-[0.9] uppercase italic">
               {project.title}
             </h1>
 
-            <p className="text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto italic">
+            <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-3xl italic border-l-4 border-indigo-600 pl-6">
               "{project.shortDescription}"
             </p>
           </header>
 
-          {/* MAIN IMAGE */}
-          <section className="mb-20">
-            <div className="relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-slate-100 group">
+          {/* HÌNH ẢNH DỰ ÁN */}
+          <section className="mb-24">
+            <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100">
               <img
                 src={project.thumbnail}
                 className="w-full h-full object-cover"
                 alt={project.title}
               />
-              {/* <div className="absolute inset-x-0 bottom-6 flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {project.demoUrl && (
-                  <Button 
-                    onClick={() => window.open(project.demoUrl, '_blank')}
-                    className="h-10 px-6 rounded-full bg-slate-900 text-white font-bold text-[10px] tracking-widest gap-2 hover:bg-indigo-600"
-                  >
-                    <Globe size={14} /> LIVE DEMO
-                  </Button>
-                )}
-              </div> */}
             </div>
           </section>
 
-          {/* TWO COLUMNS CONTENT */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 mb-24">
-            {/* LEFT: THE STORY & VIDEO */}
-            <div className="lg:col-span-2 space-y-20">
+          {/* NỘI DUNG CHI TIẾT */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
+            {/* CỘT TRÁI: CÂU CHUYỆN & GIẢI PHÁP */}
+            <div className="lg:col-span-8 space-y-24">
               <article>
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                    <Lightbulb size={24} />
+                <div className="flex items-center gap-4 mb-10">
+                  <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                    <History size={24} />
                   </div>
-                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
-                    Story & Solutions
+                  <h2 className="text-2xl md:text-3xl font-[1000] text-slate-900 uppercase tracking-tighter italic">
+                    Bài toán &{" "}
+                    <span className="text-indigo-600">Giải pháp</span>
                   </h2>
                 </div>
 
-                {/* PHẦN QUAN TRỌNG NHẤT: Thêm class 'prose' và tùy chỉnh styles */}
                 <div
                   className="prose prose-slate max-w-none 
-        prose-h2:text-xl prose-h2:font-bold prose-h2:text-slate-900 prose-h2:uppercase prose-h2:tracking-tight prose-h2:mb-4 prose-h2:mt-10
-        prose-h3:text-lg prose-h3:font-bold prose-h3:text-slate-800 prose-h3:mt-8
-        prose-p:text-slate-600 prose-p:leading-relaxed prose-p:text-[15px]
-        prose-ul:list-none prose-ul:pl-0
-        prose-li:relative prose-li:pl-7 prose-li:text-slate-600 prose-li:mb-2
-        before:prose-li:content-['🚀'] before:prose-li:absolute before:prose-li:left-0
-        "
+                    prose-h2:text-xl prose-h2:font-black prose-h2:text-slate-900 prose-h2:uppercase prose-h2:tracking-tighter prose-h2:italic
+                    prose-p:text-slate-600 prose-p:leading-relaxed prose-p:text-base prose-p:font-medium
+                    prose-strong:text-slate-900 prose-strong:font-black
+                    prose-ul:list-none prose-ul:pl-0
+                    prose-li:relative prose-li:pl-8 prose-li:text-slate-600 prose-li:mb-4
+                    before:prose-li:content-['◈'] before:prose-li:absolute before:prose-li:left-0 before:prose-li:text-indigo-600 before:prose-li:font-bold
+                  "
                   dangerouslySetInnerHTML={{ __html: project.content }}
                 />
               </article>
 
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2 uppercase tracking-tighter">
-                  <PlayCircle className="text-indigo-500" size={20} /> Product
-                  Walkthrough
+              {/* DEMO VIDEO */}
+              <div className="space-y-8">
+                <h3 className="text-xl font-[1000] text-slate-900 flex items-center gap-3 uppercase tracking-tighter italic">
+                  <PlayCircle className="text-indigo-600" size={24} /> Trải
+                  nghiệm thực tế
                 </h3>
-                <div className="relative aspect-video rounded-[1.5rem] overflow-hidden shadow-lg bg-slate-50 border border-slate-100">
+                <div className="relative aspect-video rounded-[2.5rem] overflow-hidden shadow-xl bg-slate-50 border border-slate-100">
                   {project.video_url ? (
                     renderVideo(project.video_url)
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-300 gap-2">
-                      <PlayCircle size={32} className="opacity-20" />
-                      <p className="text-[10px] font-bold uppercase tracking-widest italic">
-                        Wait for Demo
+                    <div className="flex flex-col items-center justify-center h-full text-slate-300 gap-4">
+                      <PlayCircle
+                        size={48}
+                        strokeWidth={1}
+                        className="opacity-20"
+                      />
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] italic">
+                        Video đang cập nhật
                       </p>
                     </div>
                   )}
@@ -196,73 +193,90 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            {/* RIGHT: QUICK INFO SIDEBAR */}
-            <aside className="space-y-8">
-              <div className="p-8 bg-slate-900 rounded-[2rem] text-white space-y-6">
-                <div className="flex items-center gap-2 text-indigo-400 text-[10px] font-black uppercase tracking-widest border-b border-white/10 pb-4">
-                  <Cpu size={14} /> Meta Data
+            {/* CỘT PHẢI: THÔNG TIN NHANH */}
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="p-10 bg-slate-900 rounded-[3rem] text-white sticky top-32">
+                <div className="flex items-center gap-2 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-white/10 pb-6 mb-8">
+                  <Cpu size={14} /> Thông tin hệ thống
                 </div>
-                <div className="space-y-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[9px] text-slate-500 font-bold uppercase">
-                      Role
+
+                <div className="space-y-8">
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">
+                      Vai trò
                     </span>
-                    <span className="text-sm font-bold">Fullstack Lead</span>
+                    <span className="text-base font-bold italic tracking-tight">
+                      Fullstack Developer
+                    </span>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[9px] text-slate-500 font-bold uppercase">
-                      GitHub
+
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">
+                      Mã nguồn
                     </span>
                     <Link
-                      href={project.githubUrl}
+                      href={project.githubUrl || "#"}
                       target="_blank"
-                      className="text-sm font-bold hover:text-indigo-400 flex items-center gap-2 transition-colors"
+                      className="text-base font-bold hover:text-indigo-400 flex items-center gap-2 transition-colors"
                     >
-                      Source Code <Github size={14} />
+                      GitHub Repository <Github size={16} />
                     </Link>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[9px] text-slate-500 font-bold uppercase">
-                      Live URL
+
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">
+                      Trực tuyến
                     </span>
                     <Link
-                      href={project.demoUrl}
+                      href={project.demoUrl || "#"}
                       target="_blank"
-                      className="text-sm font-bold hover:text-indigo-400 flex items-center gap-2 transition-colors"
+                      className="text-base font-bold hover:text-indigo-400 flex items-center gap-2 transition-colors"
                     >
-                      Preview Link <ExternalLink size={14} />
+                      Bản Demo Trực Tiếp <ExternalLink size={16} />
                     </Link>
+                  </div>
+                </div>
+
+                <div className="mt-12 pt-8 border-t border-white/10">
+                  <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <Zap
+                      size={20}
+                      className="text-yellow-400 fill-yellow-400"
+                    />
+                    <span className="text-[10px] font-black uppercase tracking-tighter">
+                      Tối ưu hiệu năng 99+
+                    </span>
                   </div>
                 </div>
               </div>
             </aside>
           </div>
 
-          {/* NEW SECTION: TECH STACK ARCHITECTURE - DƯỚI VIDEO */}
-          <section className="pt-20 border-t border-slate-100">
-            <div className="text-center mb-16">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">
-                KIẾN TRÚC HỆ THỐNG
+          {/* KIẾN TRÚC CÔNG NGHỆ */}
+          <section className="pt-24 border-t border-slate-100">
+            <div className="mb-16">
+              <h2 className="text-3xl font-[1000] text-slate-900 uppercase tracking-tighter italic mb-2">
+                Kiến trúc <span className="text-indigo-600">Công nghệ</span>
               </h2>
-              <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">
-                CÔNG NGHỆ ĐƯỢC SỬ DỤNG TRONG DỰ ÁN NÀY
+              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                Sơ đồ phân lớp các công cụ thực thi dự án
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Frontend */}
-              <div className="p-8 bg-slate-50 rounded-[2rem] hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-slate-100 group">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <Layout size={24} />
+              <div className="p-10 bg-[#fafafa] rounded-[3rem] border border-transparent hover:border-indigo-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-100/50 transition-all group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                  <Layout size={28} />
                 </div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                  Frontend Frameworks
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">
+                  Giao diện (Frontend)
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {getTechByCategory("FRONTEND").map((t: any) => (
                     <span
                       key={t.id}
-                      className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700"
+                      className="px-4 py-2 bg-white border border-slate-100 rounded-xl text-[11px] font-black text-slate-700 shadow-sm"
                     >
                       {t.name}
                     </span>
@@ -271,18 +285,18 @@ export default function ProjectDetail() {
               </div>
 
               {/* Backend */}
-              <div className="p-8 bg-slate-50 rounded-[2rem] hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-slate-100 group">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <Server size={24} />
+              <div className="p-10 bg-[#fafafa] rounded-[3rem] border border-transparent hover:border-indigo-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-100/50 transition-all group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                  <Server size={28} />
                 </div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                  Backend & APIs
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">
+                  Xử lý (Backend & APIs)
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {getTechByCategory("BACKEND").map((t: any) => (
                     <span
                       key={t.id}
-                      className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700"
+                      className="px-4 py-2 bg-white border border-slate-100 rounded-xl text-[11px] font-black text-slate-700 shadow-sm"
                     >
                       {t.name}
                     </span>
@@ -291,18 +305,18 @@ export default function ProjectDetail() {
               </div>
 
               {/* Database */}
-              <div className="p-8 bg-slate-50 rounded-[2rem] hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-slate-100 group">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <Database size={24} />
+              <div className="p-10 bg-[#fafafa] rounded-[3rem] border border-transparent hover:border-indigo-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-100/50 transition-all group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                  <Database size={28} />
                 </div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                  Database & Storage
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">
+                  Dữ liệu (Storage)
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {getTechByCategory("DATABASE").map((t: any) => (
                     <span
                       key={t.id}
-                      className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700"
+                      className="px-4 py-2 bg-white border border-slate-100 rounded-xl text-[11px] font-black text-slate-700 shadow-sm"
                     >
                       {t.name}
                     </span>

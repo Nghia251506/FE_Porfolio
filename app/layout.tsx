@@ -27,9 +27,16 @@ export async function generateMetadata(): Promise<Metadata> {
       title: seoData?.title || "Nguyễn Trọng Nghĩa | Portfolio",
       description:
         seoData?.description || "Lập trình viên Fullstack chuyên nghiệp",
-      keywords: seoData?.keywords || "nghĩa fullstack, web developer, portfolio, reactjs, nextjs",
+      keywords:
+        seoData?.keywords ||
+        "nghĩa fullstack, web developer, portfolio, reactjs, nextjs",
       alternates: {
         canonical: seoData?.canonicalUrl || "https://yourdomain.com",
+      },
+      icons: {
+        icon: "/icon.ico", // Đường dẫn tính từ thư mục public
+        shortcut: "/icon.ico",
+        apple: "/icon.png", // Cho thiết bị iOS
       },
       openGraph: {
         title: seoData?.siteTitle,
