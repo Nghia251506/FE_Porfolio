@@ -160,7 +160,7 @@ export default function Portfolio() {
             <div className="relative group mx-auto lg:mx-0">
               <div className="w-64 h-80 md:w-80 md:h-[420px] rounded-[3.5rem] overflow-hidden rotate-2 group-hover:rotate-0 transition-transform duration-500 shadow-2xl relative z-10 border-4 border-white">
                 <img
-                  src="https://scontent.fhan14-1.fna.fbcdn.net/v/t39.30808-6/480819112_1043678774451896_6146952721718087217_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeE9J62FP4EPmRyv039wjoP8kaeoFdbkn-aRp6gV1uSf5qeT3hjpQSsGSEOiluThhFty0QB0WE8zWDC9G_YvhwAL&_nc_ohc=6Gpzewb1l5gQ7kNvwFO78xD&_nc_oc=AdmoZk9D6LpYefpzbXBeqX6BXT3R5zU29oI3HJy8cpHvdaSHAI5DDtA1tJ_2MIWVXOA&_nc_zt=23&_nc_ht=scontent.fhan14-1.fna&_nc_gid=oUjq5yNYMopAxgxMo4QYPw&oh=00_AftJjU5P7ax3B_bc-32Za9Tp5Av6dl1Youf_ytFn8cBV8A&oe=698D8BF7"
+                  src="https://res.cloudinary.com/degpcodf3/image/upload/v1772154795/501051972_122105995460890210_8548643736104128576_n_ggyxzi.jpg"
                   alt="Nghĩa Fullstack"
                   className="w-full h-full object-cover"
                 />
@@ -219,7 +219,7 @@ export default function Portfolio() {
                 Thực chiến <br />
                 <span className="text-indigo-600">Sản phẩm</span>
               </h3>
-              <p className="text-slate-400 font-bold text-sm leading-relaxed max-w-sm">
+              <p className="text-slate-700 font-bold text-sm leading-relaxed max-w-sm">
                 Không bằng cấp hào nhoáng, tôi tập trung vào việc tạo ra các sản
                 phẩm chạy tốt, code sạch và mang lại giá trị thực tế cho người
                 dùng.
@@ -230,7 +230,7 @@ export default function Portfolio() {
           <Card className="md:col-span-2 lg:col-span-3 p-10 bg-white rounded-[4rem] shadow-sm border-none hover:shadow-xl transition-all relative overflow-hidden">
             <div className="flex items-center gap-3 mb-8">
               <History className="text-indigo-600" size={20} />
-              <h4 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-400">
+              <h4 className="font-black uppercase tracking-[0.2em] text-[10px] text-slate-700">
                 Lộ trình phát triển
               </h4>
             </div>
@@ -238,7 +238,7 @@ export default function Portfolio() {
               <div className="relative pl-10">
                 <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-indigo-600 z-10 shadow-sm" />
                 <span className="text-[10px] font-black text-indigo-600 uppercase mb-1 block">
-                  2024 - Present
+                  2024 - 2026
                 </span>
                 <h5 className="font-extrabold text-base uppercase italic">
                   Freelance Developer
